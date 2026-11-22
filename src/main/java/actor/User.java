@@ -1,6 +1,6 @@
 package actor;
 
-import main.command.CommandInterface;
+import command.CommandInterface;
 
 /** Base actor that communicates with the editor through the text command interface. */
 public abstract class User {
