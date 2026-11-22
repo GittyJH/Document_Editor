@@ -1,4 +1,4 @@
-package main.history;
+package history;
 
 import java.io.File;
 import java.io.IOException;

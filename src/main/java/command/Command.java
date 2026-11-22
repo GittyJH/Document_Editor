@@ -1,4 +1,4 @@
-package main.command;
+package command;
 
 /** Encapsulates one reversible document operation. */
 public interface Command {

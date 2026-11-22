@@ -1,4 +1,4 @@
-package main.command;
+package command;
 
 /** User-facing interface for executing complete text commands. */
 public interface CommandInterface {
