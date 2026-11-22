@@ -1,4 +1,4 @@
-package main.actor;
+package actor;
 
 import main.command.CommandInterface;
 

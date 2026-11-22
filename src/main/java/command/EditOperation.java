@@ -1,4 +1,4 @@
-package main.command;
+package command;
 
 /** Identifies the text or paragraph-organization operation performed by an edit command. */
 public enum EditOperation {
