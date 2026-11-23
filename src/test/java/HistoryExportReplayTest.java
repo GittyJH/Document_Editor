@@ -87,4 +87,39 @@ class HistoryExportReplayTest {
         assertThrows(IllegalArgumentException.class,
                 () -> history.HistoryFileCodec.decode("DOCUMENT-EDITOR-HISTORY\t1\nX\n"));
     }
+
+    @Test
+    void nestedDocumentSurvivesHistoryExportAndReplay() throws Exception {
+        CommandProcessor original = new CommandProcessor();
+
+        original.execute("document create \"Integration Test\"");
+        original.execute("section add root Root");
+        original.execute("paragraph add 0 \"alpha dog\"");
+        original.execute("section add 0 Nested");
+        original.execute("paragraph add 0.0 \"dog beta dog\"");
+
+        assertTrue(original.execute("find whole_word \"dog\"").contains("paragraph"));
+        original.execute("replace-all whole_word dog wolf");
+        original.execute("format 1 0 4 bold true");
+
+        original.execute("macro start finish");
+        original.execute("insert 1 14 \"!\"");
+        original.execute("macro stop");
+
+        String expected = original.execute("render markup 80 greedy");
+
+        File history = tempDir.resolve("integration.history").toFile();
+        original.getHistoryManager().exportHistory(history);
+
+        CommandProcessor replayed = new CommandProcessor();
+        assertTrue(replayed.execute("history replay "
+                        + command.EditCommand.quote(history.getAbsolutePath()))
+                .startsWith("History replayed:"));
+
+        assertEquals("alpha wolf", replayed.getDocument().getParagraph(0).getText());
+        assertEquals("wolf beta wolf!", replayed.getDocument().getParagraph(1).getText());
+        assertEquals(expected, replayed.execute("render markup 80 greedy"));
+        assertEquals(original.getHistoryManager().getUndoDepth(),
+                replayed.getHistoryManager().getUndoDepth());
+    }
 }
